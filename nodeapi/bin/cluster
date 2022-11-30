@@ -1,0 +1,109 @@
+#!/usr/bin/env node
+/**
+* Module dependencies.
+*/
+
+var app = require('../app');
+var debug = require('debug')('nodeapi:server');
+var http = require('http');
+var cluster = require('cluster');
+var operativeSystem = require('os');
+
+console.log('cluster.isMaster: ',cluster.isMaster);
+if (cluster.isMaster) {  // UN CLUSTER COMPARTE SIEMPRE EL MISMO PUERTO DE ESCUCHA
+  console.log('Soy el Master yo dare trabajo a los workers...');
+  //hacer forks, creando workers, 1 por cada core
+  var numCPUs = operativeSystem.cpus().length;  // me va a dar un array con un objeto por cada core del procesador
+  // console.log('operativeSystem.cpus()= ',operativeSystem.cpus());
+
+  for(var i = 0; i < numCPUs; i++) { // se crean los workers
+    console.log('cluster num:',i+1,' creado');
+    cluster.fork();
+  }
+  cluster.on('listening', (worker, address) => {   // se suscribe a este evento listening que se dispara cuando es creado un worker
+    console.log(`Worker: ${worker.id} con pid ${worker.process.pid} está conectado al puerto ${address.port} `);
+  });
+  cluster.on('exit', (worker, code, signal) => {  // se suscribe al evento EXIT para ser ejecutado cuando se mate el cluster
+    console.log(`Worker: ${worker.id} con pid ${worker.process.pid} fue muerto con el codigo del S.O. ${code} y señal ${signal}`);
+    cluster.fork();
+  })
+} else {  // se le asigna a una peticion entrante un worker de los que el master previamente hizo
+  console.log('Soy un worker');
+  /**
+   * Get port from environment and store in Express.
+   */
+  var port = normalizePort(process.env.PORT || '3000');
+  app.set('port', port);
+  /**
+   * Create HTTP server.
+   */
+  // arranque normal del servidor
+  var server = http.createServer(app);
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+}
+
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}

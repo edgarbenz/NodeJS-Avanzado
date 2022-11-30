@@ -1,0 +1,21 @@
+{
+	"Welcome to NodeApi": "Bienvenido a NodeApi",
+	"Bienvenido a NodeApi": "Bienvenido a NodeApi",
+	"Welcome to .": "Bienvenido a .",
+	"Welcome to NodeApi.": "Welcome to NodeApi.",
+	"Mouse": {
+		"one": "Ratón",
+		"other": "Ratones"
+	},
+	"this is an example": "esto es un ejemplo",
+	"Welcome to {{title}}.": "Bienvenido a {{title}}.",
+	"Services Page": "Pagina de Servicios",
+	"Services": "Servicios",
+	"Edgar": "Edgar",
+	"Download": "Bajar",
+	"This section": "This section",
+	"This section is perfect for featuring some information about your": "Esta seccion es perfecta para presentar alguna informacion acerca de tu",
+	"application, why it was built, the problem it solves, or anything": "aplicacion, porque fue hecha, el problema resuelto, o cualquier otra cosa!",
+	"else! There's plenty of space for text here, so don't worry about": "Hay mucho espacio para texto aqui, asi que no te preocupes por",
+	"writing too much.": "escribir mucho."
+}

@@ -1,0 +1,14 @@
+<p><%= ejemplo %></p>
+    
+<p><%= valorInyeccion %></p>
+
+<h2>Inyendo una condición</h2>
+<% if (condicion.esPar) { %>
+  <p><%= condicion.segundo %> es par</p>
+<% } else { %>
+  <p><%= condicion.segundo %> es impar</p>
+<% } %>
+
+<% users.forEach(user => { %>
+  <p>El usuario <%= user.name %> tiene <%= user.age %> años <img src="<%= user.imagen%>" alt=""></p>
+<% }) %>
